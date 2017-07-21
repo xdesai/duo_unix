@@ -35,13 +35,6 @@ FILE *(*_sys_fopen64)(const char *filename, const char *mode);
 char *(*_sys_inet_ntoa)(struct in_addr in);
 
 static void
-_fatal(const char *msg)
-{
-	perror(msg);
-	exit(1);
-}
-
-static void
 _preload_init(void)
 {
 	void *libc;
@@ -50,15 +43,15 @@ _preload_init(void)
 # define DL_LAZY RTLD_LAZY
 #endif
 	if (!(libc = dlopen(_PATH_LIBC, DL_LAZY))) {
-		_fatal("couldn't dlopen " _PATH_LIBC);
+		perror("couldn't dlopen " _PATH_LIBC);
 	} else if (!(_sys_open = dlsym(libc, "open"))) {
-		_fatal("couldn't dlsym 'open'");
+		perror("couldn't dlsym 'open'");
 	} else if (!(_sys_open = dlsym(libc, "open64"))) {
-		_fatal("couldn't dlsym 'open64'");
+		perror("couldn't dlsym 'open64'");
 	} else if (!(_sys_fopen = dlsym(libc, "fopen"))) {
-		_fatal("couldn't dlsym 'fopen'");
+		perror("couldn't dlsym 'fopen'");
 	} else if (!(_sys_fopen64 = dlsym(libc, "fopen64"))) {
-		_fatal("couldn't dlsym 'fopen64'");
+		perror("couldn't dlsym 'fopen64'");
 	}
 }
 
